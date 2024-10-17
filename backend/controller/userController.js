@@ -2,6 +2,7 @@ import { createError } from '../misc/helper.js'
 import User from '../model/User.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { v4 as uuidv4 } from 'uuid' // random
 
 export const loginController = async (req, res, next) => {
   const { email, password } = req.body
@@ -17,7 +18,7 @@ export const loginController = async (req, res, next) => {
     }
 
     // create jwt token
-    const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, {
       expiresIn: '9999 years',
     })
 
@@ -28,18 +29,7 @@ export const loginController = async (req, res, next) => {
 }
 
 export const signupController = async (req, res, next) => {
-  const {
-    name,
-    email,
-    password,
-    role,
-    city,
-    state,
-    country,
-    occupation,
-    phoneNumber,
-  } = req.body
-  console.dir({ body: req.body }, { depth: null })
+  const { name, email, password } = req.body
   if (!email) {
     return res.status(400).send({ message: 'Missing email.', field: 'email' })
   }
@@ -65,15 +55,20 @@ export const signupController = async (req, res, next) => {
     const newUser = new User({
       ...req.body,
       password: hashedPassword,
+      userId: uuidv4(),
     })
 
     newUser
       .save()
       .then((user) => {
         // create jwt token
-        const token = jwt.sign({ id: user.userId }, process.env.JWT, {
-          expiresIn: '9999 years',
-        })
+        const token = jwt.sign(
+          { userId: user.userId },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: '9999 years',
+          },
+        )
         res.status(200).json({ token, user })
       })
       .catch((err) => {

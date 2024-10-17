@@ -18,9 +18,6 @@ const Signup = () => {
     name: '',
     email: '',
     password: '',
-    city: '',
-    state: '',
-    country: '',
     occupation: '',
     phoneNumber: '',
     role: 'admin',
@@ -101,33 +98,7 @@ const Signup = () => {
                 inputProps={{ minLength: 5 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="City"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="State"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Country"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                fullWidth
-              />
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Occupation"
@@ -146,7 +117,7 @@ const Signup = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <TextField
                 label="Role"
                 name="role"
