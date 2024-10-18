@@ -9,7 +9,7 @@ export const api = createApi({
     'Products',
     'Customers',
     'Transactions',
-    Geographic,
+    'Geographic',
   ],
   endpoints: (build) => ({
     // Add Login endpoint
