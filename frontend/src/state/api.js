@@ -3,7 +3,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8001' }),
   reducerPath: 'adminApi',
-  tagTypes: ['Auth', 'User', 'Products', 'Customers', 'Transactions'],
+  tagTypes: [
+    'Auth',
+    'User',
+    'Products',
+    'Customers',
+    'Transactions',
+    Geographic,
+  ],
   endpoints: (build) => ({
     // Add Login endpoint
     login: build.mutation({
@@ -12,7 +19,7 @@ export const api = createApi({
         method: 'POST',
         body: credentials,
       }),
-      invalidatesTags: ['Auth'],
+      providesTags: ['Auth'],
     }),
 
     // Add Signup endpoint
@@ -22,7 +29,7 @@ export const api = createApi({
         method: 'POST',
         body: userInfo,
       }),
-      invalidatesTags: ['Auth'],
+      providesTags: ['Auth'],
     }),
 
     // Add userdetails api endpoint
@@ -85,6 +92,21 @@ export const api = createApi({
       },
       providesTags: ['Transactions'],
     }),
+
+    // Add geographic api endpoint
+    getGeographyData: build.query({
+      query: () => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/client/geographicData',
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Geographic'],
+    }),
   }),
 })
 
@@ -95,4 +117,5 @@ export const {
   useGetProductsListQuery,
   useGetCustomerListQuery,
   useGetTransactionsListQuery,
+  useGetGeographyDataQuery,
 } = api

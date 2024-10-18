@@ -7,6 +7,7 @@ import Dashboard from '../features/dashboard/index.js'
 import Products from '../features/products/index.js'
 import Customers from '../features/customer/index.js'
 import Transactions from '../features/transactions/index.js'
+import GeographicMap from '../features/geographicMap/index.js'
 
 const Routers = () => {
   return (
@@ -35,6 +36,10 @@ const Routers = () => {
       <Route
         path="/transactions"
         element={<PrivateRoutes Component={Transactions} />}
+      />
+      <Route
+        path="/geography"
+        element={<PrivateRoutes Component={GeographicMap} />}
       />
     </Routes>
   )

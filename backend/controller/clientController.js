@@ -2,6 +2,7 @@ import Customer from '../model/Customers.js'
 import ProductMetrics from '../model/ProductMetrics.js'
 import Product from '../model/Products.js'
 import Transaction from '../model/Transaction.js'
+import getCountryISO3 from 'country-iso-2-to-3'
 
 export const getProductList = async (req, res, next) => {
   try {
@@ -73,6 +74,25 @@ export const getTransactionsList = async (req, res, next) => {
       transactions,
       total,
     })
+  } catch (error) {
+    console.dir({ error }, { depth: null })
+  }
+}
+
+export const getGeographyData = async (req, res, next) => {
+  try {
+    const getGeographicData = await Customer.aggregate([
+      { $group: { _id: '$country', count: { $sum: 1 } } },
+    ])
+
+    const countryData = getGeographicData.reduce((acum, currentValue) => {
+      const getCountryIso3Name = getCountryISO3(currentValue._id)
+      if (getCountryIso3Name) {
+        acum.push({ id: getCountryIso3Name, value: currentValue.count })
+      }
+      return acum
+    }, [])
+    res.status(200).json(countryData)
   } catch (error) {
     console.dir({ error }, { depth: null })
   }
