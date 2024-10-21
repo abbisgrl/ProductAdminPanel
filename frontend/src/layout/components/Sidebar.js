@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import {
   Box,
-  Divider,
+  Collapse,
   Drawer,
   IconButton,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -13,9 +12,7 @@ import {
   useTheme,
 } from '@mui/material'
 import {
-  SettingsOutlined,
   ChevronLeft,
-  ChevronRightOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
   Groups2Outlined,
@@ -27,70 +24,13 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
+  ExpandLess,
+  ExpandMore,
+  AddCircleOutline,
+  ViewListOutlined,
 } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import profileImage from '../../assets/profile.jpeg'
 import FlexBetween from '../../styles/FlexBetween.jsx'
-
-const navItems = [
-  {
-    text: 'Dashboard',
-    icon: <HomeOutlined />,
-  },
-  {
-    text: 'Client Facing',
-    icon: null,
-  },
-  {
-    text: 'Products',
-    icon: <ShoppingCartOutlined />,
-  },
-  {
-    text: 'Customers',
-    icon: <Groups2Outlined />,
-  },
-  {
-    text: 'Transactions',
-    icon: <ReceiptLongOutlined />,
-  },
-  {
-    text: 'Geography',
-    icon: <PublicOutlined />,
-  },
-  {
-    text: 'Sales',
-    icon: null,
-  },
-  {
-    text: 'Overview',
-    icon: <PointOfSaleOutlined />,
-  },
-  {
-    text: 'Daily',
-    icon: <TodayOutlined />,
-  },
-  {
-    text: 'Monthly',
-    icon: <CalendarMonthOutlined />,
-  },
-  {
-    text: 'Breakdown',
-    icon: <PieChartOutlined />,
-  },
-  {
-    text: 'Management',
-    icon: null,
-  },
-  {
-    text: 'Admin',
-    icon: <AdminPanelSettingsOutlined />,
-  },
-  {
-    text: 'Performance',
-    icon: <TrendingUpOutlined />,
-  },
-]
 
 const Sidebar = ({
   user,
@@ -101,12 +41,81 @@ const Sidebar = ({
 }) => {
   const { pathname } = useLocation()
   const [active, setActive] = useState('')
+  const [openSubMenu, setOpenSubMenu] = useState({})
   const navigate = useNavigate()
   const theme = useTheme()
 
   useEffect(() => {
     setActive(pathname.substring(1))
   }, [pathname])
+
+  const isSuperadminOrAdmin = useMemo(() => {
+    return ['admin', 'superadmin'].includes(user?.role)
+  }, [user])
+
+  const handleToggleSubMenu = (text) => {
+    setOpenSubMenu((prev) => ({ ...prev, [text]: !prev[text] }))
+  }
+
+  const navItems = [
+    { text: 'Dashboard', icon: <HomeOutlined /> },
+    {
+      text: 'Client Facing',
+      icon: null,
+      children: [
+        {
+          text: 'Products',
+          icon: <ShoppingCartOutlined />,
+          children: [
+            { text: 'Add Product', icon: <AddCircleOutline /> },
+            { text: 'View Products', icon: <ViewListOutlined /> },
+          ],
+        },
+        {
+          text: 'Customers',
+          icon: <Groups2Outlined />,
+          children: [
+            { text: 'Add Customer', icon: <AddCircleOutline /> },
+            { text: 'View Customers', icon: <ViewListOutlined /> },
+          ],
+        },
+        {
+          text: 'Transactions',
+          icon: <ReceiptLongOutlined />,
+          children: [
+            { text: 'Add Transactions', icon: <AddCircleOutline /> },
+            { text: 'View Transactions', icon: <ViewListOutlined /> },
+          ],
+        },
+      ],
+    },
+    {
+      text: 'Sales',
+      icon: null,
+      children: [
+        { text: 'TotalStats', icon: <PointOfSaleOutlined /> },
+        { text: 'DailyStats', icon: <TodayOutlined /> },
+        { text: 'MonthlyStats', icon: <CalendarMonthOutlined /> },
+        { text: 'Breakdown', icon: <PieChartOutlined /> },
+      ],
+    },
+    ...(isSuperadminOrAdmin
+      ? [
+          {
+            text: 'Management',
+            icon: null,
+            children: [
+              {
+                text: 'Admin',
+                icon: <AdminPanelSettingsOutlined />,
+                children: [{ text: 'Manage User', icon: <ViewListOutlined /> }],
+              },
+              { text: 'Performance', icon: <TrendingUpOutlined /> },
+            ],
+          },
+        ]
+      : []),
+  ]
 
   return (
     <Box component="nav">
@@ -121,8 +130,6 @@ const Sidebar = ({
             '& .MuiDrawer-paper': {
               color: theme.palette.secondary[200],
               backgroundColor: theme.palette.background.alt,
-              boxSixing: 'border-box',
-              borderWidth: isNonMobile ? 0 : '2px',
               width: drawerWidth,
             },
           }}
@@ -130,11 +137,9 @@ const Sidebar = ({
           <Box width="100%">
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary.main}>
-                <Box display="flex" alignItems="center" gap="0.5rem">
-                  <Typography variant="h4" fontWeight="bold">
-                    ECOMVISION
-                  </Typography>
-                </Box>
+                <Typography variant="h4" fontWeight="bold">
+                  ECOMVISION
+                </Typography>
                 {!isNonMobile && (
                   <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     <ChevronLeft />
@@ -143,37 +148,132 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
-                if (!icon) {
+              {navItems.map(({ text, icon, children }) => {
+                if (children) {
                   return (
-                    <Typography key={text} sx={{ m: '2.25rem 0 1rem 3rem' }}>
-                      {text}
-                    </Typography>
+                    <React.Fragment key={text}>
+                      <Typography key={text} sx={{ m: '2.25rem 0 1rem 3rem' }}>
+                        {text}
+                      </Typography>
+                      {children.map(
+                        ({
+                          text: childText,
+                          icon: childIcon,
+                          children: subChildren,
+                        }) => {
+                          const lcText = childText.toLowerCase()
+                          return (
+                            <React.Fragment key={childText}>
+                              <ListItemButton
+                                onClick={() => {
+                                  if (subChildren?.length) {
+                                    handleToggleSubMenu(childText)
+                                  } else {
+                                    navigate(`/${childText}`)
+                                    setActive(childText)
+                                  }
+                                }}
+                              >
+                                <ListItemIcon
+                                  sx={{ color: theme.palette.secondary[200] }}
+                                >
+                                  {childIcon}
+                                </ListItemIcon>
+                                <ListItemText primary={childText} />
+                                {subChildren?.length && (
+                                  <>
+                                    {openSubMenu[childText] ? (
+                                      <ExpandLess />
+                                    ) : (
+                                      <ExpandMore />
+                                    )}
+                                  </>
+                                )}
+                              </ListItemButton>
+                              <Collapse
+                                in={openSubMenu[childText]}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <List component="div" disablePadding>
+                                  {subChildren?.map(
+                                    ({
+                                      text: subChildText,
+                                      icon: subChildIcon,
+                                    }) => {
+                                      const subChildLcText =
+                                        subChildText.toLowerCase()
+                                      return (
+                                        <ListItemButton
+                                          key={subChildText}
+                                          onClick={() => {
+                                            navigate(
+                                              `/${subChildLcText.replace(
+                                                ' ',
+                                                '',
+                                              )}`,
+                                            )
+                                            setActive(subChildLcText)
+                                          }}
+                                          sx={{
+                                            pl: 4,
+                                            backgroundColor:
+                                              active === subChildLcText
+                                                ? theme.palette.secondary[300]
+                                                : 'transparent',
+                                            color:
+                                              active === subChildLcText
+                                                ? theme.palette.primary[600]
+                                                : theme.palette.secondary[100],
+                                          }}
+                                        >
+                                          <ListItemIcon
+                                            sx={{
+                                              color:
+                                                theme.palette.secondary[200],
+                                            }}
+                                          >
+                                            {subChildIcon}
+                                          </ListItemIcon>
+                                          <ListItemText
+                                            primary={subChildText}
+                                          />
+                                        </ListItemButton>
+                                      )
+                                    },
+                                  )}
+                                </List>
+                              </Collapse>
+                            </React.Fragment>
+                          )
+                        },
+                      )}
+                    </React.Fragment>
                   )
                 }
-                const lcText = text.toLowerCase()
 
+                const lcText = text.toLowerCase()
                 return (
-                  <ListItem key={text} disablePadding>
-                    <ListItemButton
-                      onClick={() => {
-                        navigate(`/${lcText}`)
-                        setActive(lcText)
-                      }}
-                      sx={{
-                        backgroundColor:
-                          active === lcText
-                            ? theme.palette.secondary[300]
-                            : 'transparent',
-                        color:
-                          active === lcText
-                            ? theme.palette.primary[600]
-                            : theme.palette.secondary[100],
-                      }}
-                    >
+                  <ListItemButton
+                    key={text}
+                    onClick={() => {
+                      navigate(`/${lcText}`)
+                      setActive(lcText)
+                    }}
+                    sx={{
+                      backgroundColor:
+                        active === lcText
+                          ? theme.palette.secondary[300]
+                          : 'transparent',
+                      color:
+                        active === lcText
+                          ? theme.palette.primary[600]
+                          : theme.palette.secondary[100],
+                    }}
+                  >
+                    {icon && (
                       <ListItemIcon
                         sx={{
-                          ml: '2rem',
                           color:
                             active === lcText
                               ? theme.palette.primary[600]
@@ -182,52 +282,13 @@ const Sidebar = ({
                       >
                         {icon}
                       </ListItemIcon>
-                      <ListItemText primary={text} />
-                      {active === lcText && (
-                        <ChevronRightOutlined sx={{ ml: 'auto' }} />
-                      )}
-                    </ListItemButton>
-                  </ListItem>
+                    )}
+                    <ListItemText primary={text} />
+                  </ListItemButton>
                 )
               })}
             </List>
           </Box>
-
-          {/* <Box position="absolute" bottom="2rem">
-            <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-              <Box
-                component="img"
-                alt="profile"
-                src={profileImage}
-                height="40px"
-                width="40px"
-                borderRadius="50%"
-                sx={{ objectFit: 'cover' }}
-              />
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.9rem"
-                  sx={{ color: theme.palette.secondary[100] }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.8rem"
-                  sx={{ color: theme.palette.secondary[200] }}
-                >
-                  {user.occupation}
-                </Typography>
-              </Box>
-              <SettingsOutlined
-                sx={{
-                  color: theme.palette.secondary[300],
-                  fontSize: '25px ',
-                }}
-              />
-            </FlexBetween>
-          </Box> */}
         </Drawer>
       )}
     </Box>

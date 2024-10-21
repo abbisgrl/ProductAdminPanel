@@ -22,9 +22,7 @@ const Login = () => {
   const navigate = useNavigate()
   const [login, { data, isLoading }] = useLoginMutation()
 
-  console.log({ data, isLoading })
   useEffect(() => {
-    console.log({ data })
     if (data?.token) {
       localStorage.setItem('token', data.token)
       navigate('/')

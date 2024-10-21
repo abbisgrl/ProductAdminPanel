@@ -1,4 +1,4 @@
-import TotalSummary from '../model/TotalSummary.js'
+import TotalStats from '../model/TotalStats.js'
 import Transaction from '../model/Transaction.js'
 import User from '../model/User.js'
 
@@ -18,7 +18,7 @@ export const getDashboardsDetails = async (req, res) => {
       .sort({ createdOn: -1 })
 
     /* Overall Stats */
-    const TotalSummaryData = await TotalSummary.find({ year: currentYear })
+    const TotalSummaryData = await TotalStats.find({ year: currentYear })
 
     const {
       totalCustomers,

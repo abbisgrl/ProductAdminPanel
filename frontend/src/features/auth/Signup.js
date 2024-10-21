@@ -35,7 +35,6 @@ const Signup = () => {
     e.preventDefault()
     try {
       const result = await signup(formData).unwrap() // Call signup mutation with form data
-      console.log('Signup successful:', result) // Handle successful signup
     } catch (error) {
       console.error('Signup failed:', error) // Handle error
     }

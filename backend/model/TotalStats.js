@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const TotalSummarySchema = new mongoose.Schema(
+const TotalStatsSchema = new mongoose.Schema(
   {
     totalCustomers: Number,
     yearlySalesTotal: Number,
@@ -28,5 +28,5 @@ const TotalSummarySchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-const TotalSummary = mongoose.model('TotalSummary', TotalSummarySchema)
-export default TotalSummary
+const TotalStats = mongoose.model('TotalStats', TotalStatsSchema)
+export default TotalStats

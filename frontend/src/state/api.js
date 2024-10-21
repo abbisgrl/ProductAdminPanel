@@ -10,6 +10,7 @@ export const api = createApi({
     'Customers',
     'Transactions',
     'Geographic',
+    'TotalStats',
   ],
   endpoints: (build) => ({
     // Add Login endpoint
@@ -107,6 +108,21 @@ export const api = createApi({
       },
       providesTags: ['Geographic'],
     }),
+
+    // Add sales api endpoint
+    getTotalStats: build.query({
+      query: () => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/sales/totalSales',
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['TotalStats'],
+    }),
   }),
 })
 
@@ -118,4 +134,5 @@ export const {
   useGetCustomerListQuery,
   useGetTransactionsListQuery,
   useGetGeographyDataQuery,
+  useGetTotalStatsQuery,
 } = api
