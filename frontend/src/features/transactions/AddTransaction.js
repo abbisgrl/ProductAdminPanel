@@ -9,39 +9,56 @@ import {
   InputLabel,
   FormControl,
 } from '@mui/material'
+import {
+  useAddTransactionMutation,
+  useGetCustomerListQuery,
+  useGetProductsListQuery,
+} from '../../state/api'
 
 const AddTransaction = () => {
   const [transactionData, setTransactionData] = useState({
-    userId: '',
+    customerId: '',
     cost: '',
     products: [],
   })
   const [users, setUsers] = useState([])
   const [products, setProducts] = useState([])
+  const [open, setOpen] = useState(false)
+
+  const { data: customerData, isLoading: customerIsLoading } =
+    useGetCustomerListQuery()
+  const { data: productData, isLoading: productIsLoading } =
+    useGetProductsListQuery()
+  const [addTransaction, { data, isLoading }] = useAddTransactionMutation()
 
   // Fetch users and products from API (placeholder functions)
   useEffect(() => {
-    const fetchUsers = async () => {
-      // Replace with your API call to get users
-      const userResponse = [
-        { _id: '1', name: 'User One' },
-        { _id: '2', name: 'User Two' },
-      ]
-      setUsers(userResponse)
+    if (customerData && !customerIsLoading) {
+      const customerArray = []
+      customerData.forEach((item) => {
+        const customerDataUpdated = {
+          customerId: item.customerId,
+          name: item.name,
+        }
+        customerArray.push(customerDataUpdated)
+      })
+      setUsers(customerArray)
     }
+  }, [customerData])
 
-    const fetchProducts = async () => {
-      // Replace with your API call to get products
-      const productResponse = [
-        { _id: '101', name: 'Product A' },
-        { _id: '102', name: 'Product B' },
-      ]
-      setProducts(productResponse)
+  useEffect(() => {
+    if (productData && !productIsLoading) {
+      const productArray = []
+      productData.forEach((item) => {
+        const productDataUpdated = {
+          productId: item.productId,
+          name: item.name,
+        }
+        productArray.push(productDataUpdated)
+      })
+      setProducts(productArray)
     }
-
-    fetchUsers()
-    fetchProducts()
-  }, [])
+  }, [productData])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -57,12 +74,17 @@ const AddTransaction = () => {
       ...prevData,
       products: value,
     }))
+    setOpen(false)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle form submission here, like sending data to the backend
-    console.log('Transaction Data:', transactionData)
+    // Here you can integrate your backend call to save the product
+    try {
+      const result = await addTransaction(transactionData).unwrap()
+    } catch (error) {
+      console.error('Adding transaction failed', error) // Handle error
+    }
   }
 
   return (
@@ -86,14 +108,14 @@ const AddTransaction = () => {
         <InputLabel>User</InputLabel>
         <Select
           label="User"
-          name="userId"
-          value={transactionData.userId}
+          name="customerId"
+          value={transactionData.customerId}
           onChange={handleChange}
           required
         >
-          {users.map((user) => (
-            <MenuItem key={user._id} value={user._id}>
-              {user.name}
+          {users.map((customer) => (
+            <MenuItem key={customer.customerId} value={customer.customerId}>
+              {customer.name}
             </MenuItem>
           ))}
         </Select>
@@ -116,10 +138,13 @@ const AddTransaction = () => {
           multiple
           value={transactionData.products}
           onChange={handleProductSelect}
+          onOpen={() => setOpen(true)} // Set open state to true
+          onClose={() => setOpen(false)} // Set open state to false
+          open={open} // Control the open state
           required
         >
           {products.map((product) => (
-            <MenuItem key={product._id} value={product._id}>
+            <MenuItem key={product.productId} value={product.productId}>
               {product.name}
             </MenuItem>
           ))}

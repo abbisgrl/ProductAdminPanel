@@ -11,9 +11,10 @@ export const api = createApi({
     'Transactions',
     'Geographic',
     'TotalStats',
+    'Dashboard',
   ],
   endpoints: (build) => ({
-    // Add Login endpoint
+    // Add auth endpoint
     login: build.mutation({
       query: (credentials) => ({
         url: 'auth/login',
@@ -23,7 +24,6 @@ export const api = createApi({
       providesTags: ['Auth'],
     }),
 
-    // Add Signup endpoint
     signup: build.mutation({
       query: (userInfo) => ({
         url: 'auth/signup',
@@ -63,6 +63,21 @@ export const api = createApi({
       providesTags: ['Products'],
     }),
 
+    addProduct: build.mutation({
+      query: (productInfo) => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/client/addProduct',
+          method: 'POST',
+          body: productInfo,
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Products'],
+    }),
+
     // Add customers api endpoint
     getCustomerList: build.query({
       query: () => {
@@ -76,6 +91,21 @@ export const api = createApi({
         }
       },
       providesTags: ['Customers'],
+    }),
+
+    addCustomer: build.mutation({
+      query: (customerInfo) => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/client/addCustomer',
+          method: 'POST',
+          body: customerInfo,
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Customer'],
     }),
 
     // Add transactions api endpoint
@@ -92,6 +122,21 @@ export const api = createApi({
         }
       },
       providesTags: ['Transactions'],
+    }),
+
+    addTransaction: build.mutation({
+      query: (transactionInfo) => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/client/addTransaction',
+          method: 'POST',
+          body: transactionInfo,
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Transaction'],
     }),
 
     // Add geographic api endpoint
@@ -123,6 +168,21 @@ export const api = createApi({
       },
       providesTags: ['TotalStats'],
     }),
+
+    // Add dashboard api endpoint
+    getDashboardData: build.query({
+      query: () => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/general/dashboard',
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Dashboard'],
+    }),
   }),
 })
 
@@ -131,8 +191,12 @@ export const {
   useSignupMutation,
   useGetUserQuery,
   useGetProductsListQuery,
+  useAddProductMutation,
   useGetCustomerListQuery,
+  useAddCustomerMutation,
   useGetTransactionsListQuery,
+  useAddTransactionMutation,
   useGetGeographyDataQuery,
   useGetTotalStatsQuery,
+  useGetDashboardDataQuery,
 } = api

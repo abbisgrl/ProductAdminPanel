@@ -1,133 +1,156 @@
-export const darkColors = {
+export const refinedBlueTheme = {
   primary: {
-    // blue
-    100: '#d3d4de',
-    200: '#a6a9be',
-    300: '#7a7f9d',
-    400: '#4d547d',
-    500: '#21295c',
-    600: '#191F45', // manually adjusted
-    700: '#141937',
-    800: '#0d1025',
-    900: '#070812',
+    100: '#B3D9FF',
+    200: '#A3D1FF',
+    300: '#6DB6FF',
+    400: '#3D9AFF',
+    500: '#007bff',
+    600: '#0069D3',
+    700: '#0055A6',
+    800: '#004079',
+    900: '#00284D',
   },
   secondary: {
-    // yellow
-    50: '#f0f0f0', // manually adjusted
-    100: '#fff6e0',
-    200: '#ffedc2',
-    300: '#ffe3a3',
-    400: '#ffda85',
-    500: '#ffd166',
-    600: '#cca752',
-    700: '#997d3d',
-    800: '#665429',
-    900: '#332a14',
+    100: '#FFE6E6',
+    200: '#FFB3B3',
+    300: '#FF8080',
+    400: '#FF4D4D',
+    500: '#FF1A1A',
+    600: '#CC1515',
+    700: '#991010',
+    800: '#660B0B',
+    900: '#330505',
   },
-  grey: {
-    0: '#ffffff', // manually adjusted
-    10: '#f6f6f6', // manually adjusted
-    50: '#f0f0f0', // manually adjusted
-    100: '#e0e0e0',
-    200: '#c2c2c2',
-    300: '#a3a3a3',
-    400: '#858585',
-    500: '#666666',
-    600: '#525252',
-    700: '#3d3d3d',
-    800: '#292929',
-    900: '#141414',
-    1000: '#000000', // manually adjusted
+  neutral: {
+    0: '#FFFFFF',
+    50: '#F4F5F7',
+    100: '#E8EAED',
+    200: '#D1D5DB',
+    300: '#B8BDC3',
+    400: '#9CA3AF',
+    500: '#6B7280',
+    600: '#4B5563',
+    700: '#374151',
+    800: '#1F2937',
+    900: '#111827',
   },
 }
 
-const lightColors = (darkColors) => {
-  return Object.entries(darkColors).reduce((acc, [key, val]) => {
-    const reversedObj = Object.keys(val).reduce((reversed, k, i, arr) => {
-      reversed[k] = val[arr[arr.length - i - 1]] // Reverse value assignment
-      return reversed
-    }, {})
-
-    acc[key] = reversedObj
-    return acc
-  }, {})
+export const refinedLightTheme = {
+  primary: {
+    100: '#CCE5FF',
+    200: '#99CCFF',
+    300: '#66B2FF',
+    400: '#3399FF',
+    500: '#007bff',
+    600: '#0066CC',
+    700: '#0052A3',
+    800: '#003D7A',
+    900: '#002652',
+  },
+  secondary: {
+    100: '#FFE6E6',
+    200: '#FFCCCC',
+    300: '#FF9999',
+    400: '#FF6666',
+    500: '#FF3333',
+    600: '#CC2929',
+    700: '#991F1F',
+    800: '#661414',
+    900: '#330A0A',
+  },
+  neutral: {
+    0: '#FFFFFF',
+    50: '#F9FAFB',
+    100: '#F2F4F6',
+    200: '#E5E8EB',
+    300: '#D1D5DB',
+    400: '#B0B7C3',
+    500: '#6B7280',
+    600: '#4B5563',
+    700: '#374151',
+    800: '#1F2937',
+    900: '#111827',
+  },
 }
+// Applying the refinedLightTheme for light mode in themeSettings
 
-export const tokensLight = lightColors(darkColors)
-
-// mui theme settings
-export const themeSettings = (mode) => {
-  return {
-    palette: {
-      mode: mode,
-      ...(mode === 'dark'
-        ? {
-            primary: {
-              ...darkColors.primary,
-              main: darkColors.primary[400],
-              light: darkColors.primary[400],
-            },
-            secondary: {
-              ...darkColors.secondary,
-              main: darkColors.secondary[300],
-            },
-            neutral: {
-              ...darkColors.grey,
-              main: darkColors.grey[500],
-            },
-            background: {
-              default: darkColors.primary[600],
-              alt: darkColors.primary[500],
-            },
-          }
-        : {
-            primary: {
-              ...tokensLight.primary,
-              main: darkColors.grey[50],
-              light: darkColors.grey[100],
-            },
-            secondary: {
-              ...tokensLight.secondary,
-              main: darkColors.secondary[600],
-              light: darkColors.secondary[700],
-            },
-            neutral: {
-              ...tokensLight.grey,
-              main: darkColors.grey[500],
-            },
-            background: {
-              default: darkColors.grey[0],
-              alt: darkColors.grey[50],
-            },
-          }),
+export const themeSettings = (mode) => ({
+  palette: {
+    mode: mode,
+    ...(mode === 'dark'
+      ? {
+          primary: {
+            ...refinedBlueTheme.primary,
+            main: refinedBlueTheme.primary[300],
+            light: refinedBlueTheme.primary[100],
+          },
+          secondary: {
+            ...refinedBlueTheme.secondary,
+            main: refinedBlueTheme.secondary[400],
+          },
+          neutral: {
+            ...refinedBlueTheme.neutral,
+            main: refinedBlueTheme.neutral[300],
+          },
+          background: {
+            default: refinedBlueTheme.primary[900],
+            alt: refinedBlueTheme.primary[800],
+          },
+        }
+      : {
+          primary: {
+            ...refinedLightTheme.primary,
+            main: refinedLightTheme.primary[500],
+            light: refinedLightTheme.primary[100],
+          },
+          secondary: {
+            ...refinedLightTheme.secondary,
+            main: refinedLightTheme.secondary[500],
+            light: refinedLightTheme.secondary[200],
+          },
+          neutral: {
+            ...refinedLightTheme.neutral,
+            main: refinedLightTheme.neutral[500],
+          },
+          background: {
+            default: refinedLightTheme.neutral[50],
+            alt: refinedLightTheme.neutral[100],
+          },
+        }),
+  },
+  typography: {
+    fontFamily: ['Lato', 'sans-serif'].join(','),
+    fontSize: 14,
+    h1: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 36,
+      fontWeight: 700,
     },
-    typography: {
-      fontFamily: ['Inter', 'sans-serif'].join(','),
-      fontSize: 12,
-      h1: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 40,
-      },
-      h2: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 32,
-      },
-      h3: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 24,
-      },
-      h4: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 20,
-      },
-      h5: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 16,
-      },
-      h6: {
-        fontFamily: ['Inter', 'sans-serif'].join(','),
-        fontSize: 14,
-      },
+    h2: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 30,
+      fontWeight: 600,
     },
-  }
-}
+    h3: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 26,
+      fontWeight: 500,
+    },
+    h4: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 22,
+      fontWeight: 500,
+    },
+    h5: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 18,
+      fontWeight: 400,
+    },
+    h6: {
+      fontFamily: ['Lato', 'sans-serif'].join(','),
+      fontSize: 16,
+      fontWeight: 400,
+    },
+  },
+})

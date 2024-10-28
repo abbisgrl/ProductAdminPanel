@@ -5,6 +5,7 @@ import { ResponsiveLine } from '@nivo/line'
 import { useGetTotalStatsQuery } from '../../../state/api.js'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import Loader from '../../component/Loader.jsx'
 
 const DailyStats = () => {
   const [startDate, setStartDate] = useState(new Date('2024-01-01'))
@@ -204,7 +205,7 @@ const DailyStats = () => {
             ]}
           />
         ) : (
-          <>Loading...</>
+          <Loader />
         )}
       </Box>
     </Box>

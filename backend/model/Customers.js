@@ -14,17 +14,13 @@ const CustomerSchema = new mongoose.Schema(
       max: 50,
       unique: true,
     },
-    password: {
-      type: String,
-      required: true,
-      min: 5,
-    },
     city: String,
     state: String,
     country: String,
     occupation: String,
     phoneNumber: String,
     transactions: Array,
+    customerId: String,
   },
   { timestamps: true },
 )

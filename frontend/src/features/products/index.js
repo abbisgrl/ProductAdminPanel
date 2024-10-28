@@ -2,6 +2,7 @@ import { Box, useMediaQuery } from '@mui/material'
 import ProductCard from './ProductCard'
 import Header from '../component/SubHeader'
 import { useGetProductsListQuery } from '../../state/api'
+import Loader from '../component/Loader'
 
 const Products = () => {
   const { data, isLoading } = useGetProductsListQuery()
@@ -47,7 +48,7 @@ const Products = () => {
           )}
         </Box>
       ) : (
-        <>Loading...</>
+        <Loader />
       )}
     </Box>
   )

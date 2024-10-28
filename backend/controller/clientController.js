@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid' // random
 import Customer from '../model/Customers.js'
 import ProductMetrics from '../model/ProductMetrics.js'
 import Product from '../model/Products.js'
@@ -10,22 +11,26 @@ export const getProductList = async (req, res, next) => {
       {
         $lookup: {
           from: ProductMetrics.collection.name,
-          let: { productId: { $toString: '$_id' } }, // Convert _id (ObjectId) to string
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$productId', '$$productId'], // Compare foreignField 'productId' with the converted _id
-                },
-              },
-            },
-          ],
+          localField: 'productId',
+          foreignField: 'productId',
           as: 'stat',
         },
       },
-      { $unwind: '$stat' },
+      { $unwind: { path: '$stat', preserveNullAndEmptyArrays: true } },
     ])
+
     res.status(200).json(getProducts)
+  } catch (error) {
+    console.dir({ error }, { depth: null })
+  }
+}
+
+export const addProduct = async (req, res, next) => {
+  const productArray = [{ ...req.body, productId: uuidv4() }]
+  try {
+    const result = await Product.insertMany(productArray)
+    const response = { message: 'Product Succefully Added' }
+    res.status(200).json(response)
   } catch (error) {
     console.dir({ error }, { depth: null })
   }
@@ -40,12 +45,23 @@ export const getCustomerList = async (req, res, next) => {
   }
 }
 
+export const addCustomer = async (req, res, next) => {
+  const customerArray = [{ ...req.body, customerId: uuidv4() }]
+  try {
+    const result = await Customer.insertMany(customerArray)
+    const response = { message: 'Customer Succefully Added' }
+    res.status(200).json(response)
+  } catch (error) {
+    console.dir({ error }, { depth: null })
+  }
+}
+
 export const getTransactionsList = async (req, res, next) => {
   try {
-    // sort should look like this: { "field": "userId", "sort": "desc"}
+    // sort should look like this: { "field": "customerId", "sort": "desc"}
     const { page = 1, pageSize = 20, sort = null, search = '' } = req.query
 
-    // formatted sort should look like { userId: -1 }
+    // formatted sort should look like { customerId: -1 }
     const generateSort = () => {
       const sortParsed = JSON.parse(sort)
       const sortFormatted = {
@@ -59,7 +75,7 @@ export const getTransactionsList = async (req, res, next) => {
     const transactions = await Transaction.find({
       $or: [
         { cost: { $regex: new RegExp(search, 'i') } },
-        { userId: { $regex: new RegExp(search, 'i') } },
+        { customerId: { $regex: new RegExp(search, 'i') } },
       ],
     })
       .sort(sortFormatted)
@@ -74,6 +90,26 @@ export const getTransactionsList = async (req, res, next) => {
       transactions,
       total,
     })
+  } catch (error) {
+    console.dir({ error }, { depth: null })
+  }
+}
+
+export const addTransaction = async (req, res, next) => {
+  const transactionId = uuidv4()
+  const transactionArray = [{ ...req.body, transactionId }]
+  try {
+    const result = await Transaction.insertMany(transactionArray)
+    await Customer.updateOne(
+      { customerId: req.body.customerId },
+      {
+        $push: {
+          transactions: transactionId,
+        },
+      },
+    )
+    const response = { message: 'Transaction Succefully Added' }
+    res.status(200).json(response)
   } catch (error) {
     console.dir({ error }, { depth: null })
   }

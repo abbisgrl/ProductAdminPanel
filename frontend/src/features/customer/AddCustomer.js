@@ -1,17 +1,29 @@
 import React, { useState } from 'react'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+} from '@mui/material'
+import { useAddCustomerMutation, useAddProductMutation } from '../../state/api'
+import countriesData from '../../utils/countryData'
 
 const AddCustomer = () => {
   const [customerData, setCustomerData] = useState({
     name: '',
     email: '',
-    password: '',
     city: '',
     state: '',
     country: '',
     occupation: '',
     phoneNumber: '',
   })
+
+  const [addCustomer, { data, isLoading }] = useAddCustomerMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -21,10 +33,14 @@ const AddCustomer = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle form submission here, like sending data to the backend
-    console.log('Customer Data:', customerData)
+    // Here you can integrate your backend call to save the product
+    try {
+      const result = await addCustomer(customerData).unwrap() // Call signup mutation with form data
+    } catch (error) {
+      console.error('Signup failed:', error) // Handle error
+    }
   }
 
   return (
@@ -66,17 +82,6 @@ const AddCustomer = () => {
       />
 
       <TextField
-        label="Password"
-        name="password"
-        type="password"
-        value={customerData.password}
-        onChange={handleChange}
-        required
-        fullWidth
-        inputProps={{ minLength: 5 }}
-      />
-
-      <TextField
         label="City"
         name="city"
         value={customerData.city}
@@ -92,13 +97,24 @@ const AddCustomer = () => {
         fullWidth
       />
 
-      <TextField
-        label="Country"
-        name="country"
-        value={customerData.country}
-        onChange={handleChange}
-        fullWidth
-      />
+      {/* Country Dropdown */}
+      <FormControl fullWidth>
+        <InputLabel id="country-select-label">Country</InputLabel>
+        <Select
+          labelId="country-select-label"
+          name="country"
+          value={customerData.country}
+          onChange={handleChange}
+          label="Country"
+          required
+        >
+          {countriesData.map((country) => (
+            <MenuItem key={country.iso2} value={country.iso2}>
+              {country.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <TextField
         label="Occupation"

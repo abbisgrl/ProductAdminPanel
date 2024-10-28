@@ -46,8 +46,22 @@ const Sidebar = ({
   const theme = useTheme()
 
   useEffect(() => {
-    setActive(pathname.substring(1))
-  }, [pathname])
+    const title = getCurrentTitle(pathname.substring(1))
+    setActive(title)
+  }, [])
+
+  const getCurrentTitle = (pathname) => {
+    if (pathname.includes('add')) {
+      if (pathname.includes('product')) {
+        return 'products'
+      } else if (pathname.includes('customer')) {
+        return 'customers'
+      } else if (pathname.includes('transaction')) {
+        return 'transaction'
+      }
+    }
+    return pathname
+  }
 
   const isSuperadminOrAdmin = useMemo(() => {
     return ['admin', 'superadmin'].includes(user?.role)
@@ -67,25 +81,53 @@ const Sidebar = ({
           text: 'Products',
           icon: <ShoppingCartOutlined />,
           children: [
-            { text: 'Add Product', icon: <AddCircleOutline /> },
-            { text: 'View Products', icon: <ViewListOutlined /> },
+            {
+              text: 'Add Product',
+              icon: <AddCircleOutline />,
+              url: '/add/product',
+            },
+            {
+              text: 'View Products',
+              icon: <ViewListOutlined />,
+              url: '/products',
+            },
           ],
         },
         {
           text: 'Customers',
           icon: <Groups2Outlined />,
           children: [
-            { text: 'Add Customer', icon: <AddCircleOutline /> },
-            { text: 'View Customers', icon: <ViewListOutlined /> },
+            {
+              text: 'Add Customer',
+              icon: <AddCircleOutline />,
+              url: '/add/customer',
+            },
+            {
+              text: 'View Customers',
+              icon: <ViewListOutlined />,
+              url: '/customers',
+            },
           ],
         },
         {
           text: 'Transactions',
           icon: <ReceiptLongOutlined />,
           children: [
-            { text: 'Add Transactions', icon: <AddCircleOutline /> },
-            { text: 'View Transactions', icon: <ViewListOutlined /> },
+            {
+              text: 'Add Transactions',
+              icon: <AddCircleOutline />,
+              url: '/add/transaction',
+            },
+            {
+              text: 'View Transactions',
+              icon: <ViewListOutlined />,
+              url: '/transactions',
+            },
           ],
+        },
+        {
+          text: 'Geography',
+          icon: <PublicOutlined />,
         },
       ],
     },
@@ -93,10 +135,18 @@ const Sidebar = ({
       text: 'Sales',
       icon: null,
       children: [
-        { text: 'TotalStats', icon: <PointOfSaleOutlined /> },
-        { text: 'DailyStats', icon: <TodayOutlined /> },
-        { text: 'MonthlyStats', icon: <CalendarMonthOutlined /> },
-        { text: 'Breakdown', icon: <PieChartOutlined /> },
+        {
+          text: 'TotalStats',
+          icon: <PointOfSaleOutlined />,
+          url: '/totalstats',
+        },
+        { text: 'DailyStats', icon: <TodayOutlined />, url: '/dailystats' },
+        {
+          text: 'MonthlyStats',
+          icon: <CalendarMonthOutlined />,
+          url: '/monthlystats',
+        },
+        { text: 'Breakdown', icon: <PieChartOutlined />, url: '/breakdown' },
       ],
     },
     ...(isSuperadminOrAdmin
@@ -108,9 +158,19 @@ const Sidebar = ({
               {
                 text: 'Admin',
                 icon: <AdminPanelSettingsOutlined />,
-                children: [{ text: 'Manage User', icon: <ViewListOutlined /> }],
+                children: [
+                  {
+                    text: 'Manage User',
+                    icon: <ViewListOutlined />,
+                    url: '/users',
+                  },
+                ],
               },
-              { text: 'Performance', icon: <TrendingUpOutlined /> },
+              {
+                text: 'Performance',
+                icon: <TrendingUpOutlined />,
+                url: '/performance',
+              },
             ],
           },
         ]
@@ -152,7 +212,12 @@ const Sidebar = ({
                 if (children) {
                   return (
                     <React.Fragment key={text}>
-                      <Typography key={text} sx={{ m: '2.25rem 0 1rem 3rem' }}>
+                      <Typography
+                        key={text}
+                        sx={{
+                          m: '2.25rem 0 1rem 3rem',
+                        }}
+                      >
                         {text}
                       </Typography>
                       {children.map(
@@ -160,6 +225,7 @@ const Sidebar = ({
                           text: childText,
                           icon: childIcon,
                           children: subChildren,
+                          url: childUrl,
                         }) => {
                           const lcText = childText.toLowerCase()
                           return (
@@ -169,9 +235,20 @@ const Sidebar = ({
                                   if (subChildren?.length) {
                                     handleToggleSubMenu(childText)
                                   } else {
-                                    navigate(`/${childText}`)
+                                    navigate(childUrl)
                                     setActive(childText)
                                   }
+                                }}
+                                sx={{
+                                  pl: 4,
+                                  backgroundColor:
+                                    active === childText
+                                      ? theme.palette.secondary[300]
+                                      : 'transparent',
+                                  color:
+                                    active === childText
+                                      ? theme.palette.primary[600]
+                                      : theme.palette.secondary[100],
                                 }}
                               >
                                 <ListItemIcon
@@ -200,6 +277,7 @@ const Sidebar = ({
                                     ({
                                       text: subChildText,
                                       icon: subChildIcon,
+                                      url: subChildUrl,
                                     }) => {
                                       const subChildLcText =
                                         subChildText.toLowerCase()
@@ -207,25 +285,10 @@ const Sidebar = ({
                                         <ListItemButton
                                           key={subChildText}
                                           onClick={() => {
-                                            navigate(
-                                              `/${subChildLcText.replace(
-                                                ' ',
-                                                '',
-                                              )}`,
-                                            )
-                                            setActive(subChildLcText)
+                                            navigate(subChildUrl)
+                                            setActive(childText)
                                           }}
-                                          sx={{
-                                            pl: 4,
-                                            backgroundColor:
-                                              active === subChildLcText
-                                                ? theme.palette.secondary[300]
-                                                : 'transparent',
-                                            color:
-                                              active === subChildLcText
-                                                ? theme.palette.primary[600]
-                                                : theme.palette.secondary[100],
-                                          }}
+                                          sx={{ pl: 4 }}
                                         >
                                           <ListItemIcon
                                             sx={{
@@ -261,6 +324,7 @@ const Sidebar = ({
                       setActive(lcText)
                     }}
                     sx={{
+                      pl: 4,
                       backgroundColor:
                         active === lcText
                           ? theme.palette.secondary[300]

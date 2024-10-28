@@ -81,10 +81,10 @@ const ProductCard = ({
           <Typography variant="body2">ID: {_id}</Typography>
           <Typography variant="body2">Supply Left: {supply}</Typography>
           <Typography variant="body2">
-            Yearly Sales This Year: {stat.yearlySalesTotal}
+            Yearly Sales This Year: {stat?.yearlySalesTotal}
           </Typography>
           <Typography variant="body2">
-            Yearly Units Sold This Year: {stat.yearlyTotalSoldUnits}
+            Yearly Units Sold This Year: {stat?.yearlyTotalSoldUnits}
           </Typography>
         </CardContent>
       </Collapse>

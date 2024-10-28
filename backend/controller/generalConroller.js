@@ -1,19 +1,19 @@
 import TotalStats from '../model/TotalStats.js'
 import Transaction from '../model/Transaction.js'
 import User from '../model/User.js'
+import moment from 'moment'
 
 export const getDashboardsDetails = async (req, res) => {
   // Extract the userId from the decoded token
   const userId = req.userId
 
   try {
-    // hardcoded values
-    const currentMonth = 'November'
-    const currentYear = 2021
-    const currentDay = '2021-11-15'
+    const currentYear = moment().format('YYYY')
+    const currentDay = moment().format('YYYY-MM-DD')
+    const currentMonth = moment().format('MMMM')
 
     /* Recent Transactions */
-    const transactions = await Transaction.find({ userId })
+    const transactions = await Transaction.find()
       .limit(50)
       .sort({ createdOn: -1 })
 

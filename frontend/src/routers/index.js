@@ -33,27 +33,27 @@ const Routers = () => {
         />
       ))}
       <Route
-        path="/addproduct"
+        path="/add/product"
         element={<PrivateRoutes Component={AddProduct} />}
       />
       <Route
-        path="/viewproducts"
+        path="/products"
         element={<PrivateRoutes Component={Products} />}
       />
       <Route
-        path="/addcustomer"
+        path="/add/customer"
         element={<PrivateRoutes Component={AddCustomer} />}
       />
       <Route
-        path="/viewcustomers"
+        path="/customers"
         element={<PrivateRoutes Component={Customers} />}
       />
       <Route
-        path="/addtransactions"
+        path="/add/transaction"
         element={<PrivateRoutes Component={AddTransaction} />}
       />
       <Route
-        path="/viewtransactions"
+        path="/transactions"
         element={<PrivateRoutes Component={Transactions} />}
       />
       <Route

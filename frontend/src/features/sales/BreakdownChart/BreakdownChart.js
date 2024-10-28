@@ -2,12 +2,13 @@ import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
 import { Box, Typography, useTheme } from '@mui/material'
 import { useGetTotalStatsQuery } from '../../../state/api.js'
+import Loader from '../../component/Loader.jsx'
 
 const BreakdownChart = ({ isDashboard = false }) => {
   const { data, isLoading } = useGetTotalStatsQuery()
   const theme = useTheme()
 
-  if (!data || isLoading) return 'Loading...'
+  if (!data || isLoading) return <Loader />
 
   const colors = [
     theme.palette.secondary[500],

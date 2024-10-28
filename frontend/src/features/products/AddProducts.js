@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
+import { useAddProductMutation } from '../../state/api'
 
 const AddProduct = () => {
   const [productData, setProductData] = useState({
@@ -11,6 +12,14 @@ const AddProduct = () => {
     supply: '',
   })
 
+  const [addProduct, { data, isLoading }] = useAddProductMutation()
+
+  useEffect(() => {
+    if (data) {
+      console.log('Product successfully added')
+    }
+  }, [data])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setProductData((prevData) => ({
@@ -19,10 +28,14 @@ const AddProduct = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // Here you can integrate your backend call to save the product
-    console.log('Product Data:', productData)
+    try {
+      const result = await addProduct(productData).unwrap() // Call signup mutation with form data
+    } catch (error) {
+      console.error('Signup failed:', error) // Handle error
+    }
   }
 
   return (

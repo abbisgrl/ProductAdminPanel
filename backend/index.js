@@ -11,16 +11,6 @@ import salesRoutes from './routes/salesRoutes.js'
 import managementRoutes from './routes/managementRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import './db/index.js'
-import Product from './model/Products.js'
-import {
-  dataProduct,
-  dataProductStat,
-  dataTransaction,
-  dataUser,
-} from './data/index.js'
-import ProductMetrics from './model/ProductMetrics.js'
-import Customer from './model/Customers.js'
-import Transaction from './model/Transaction.js'
 
 dotenv.config()
 const app = express()

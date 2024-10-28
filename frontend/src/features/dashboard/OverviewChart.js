@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 import { ResponsiveLine } from '@nivo/line'
 import { useTheme } from '@mui/material'
-import { useGetTotalStatsQuery } from '../../../state/api.js'
-import Loader from '../../component/Loader.jsx'
+import { useGetTotalStatsQuery } from '../../state/api'
+import Loader from '../component/Loader'
 
-const TotalStatsChart = ({ isDashboard = false, view }) => {
+const OverviewChart = ({ isDashboard = false, view }) => {
   const theme = useTheme()
   const { data, isLoading } = useGetTotalStatsQuery()
 
@@ -164,4 +164,4 @@ const TotalStatsChart = ({ isDashboard = false, view }) => {
   )
 }
 
-export default TotalStatsChart
+export default OverviewChart

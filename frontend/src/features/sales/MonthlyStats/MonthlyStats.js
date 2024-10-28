@@ -3,6 +3,7 @@ import { ResponsiveLine } from '@nivo/line'
 import { Box, useTheme } from '@mui/material'
 import { useGetTotalStatsQuery } from '../../../state/api.js'
 import Header from '../../component/SubHeader.js'
+import Loader from '../../component/Loader.jsx'
 
 const MonthlyStats = () => {
   const { data } = useGetTotalStatsQuery()
@@ -146,7 +147,7 @@ const MonthlyStats = () => {
             ]}
           />
         ) : (
-          <>Loading...</>
+          <Loader />
         )}
       </Box>
     </Box>

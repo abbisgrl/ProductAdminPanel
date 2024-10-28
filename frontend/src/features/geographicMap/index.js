@@ -4,6 +4,7 @@ import { useGetGeographyDataQuery } from '../../state/api.js'
 import Header from '../component/SubHeader.js'
 import { ResponsiveChoropleth } from '@nivo/geo'
 import { geoData } from '../../utils/geoData.js'
+import Loader from '../component/Loader.jsx'
 
 const GeographicMap = () => {
   const theme = useTheme()
@@ -92,7 +93,7 @@ const GeographicMap = () => {
             ]}
           />
         ) : (
-          <>Loading...</>
+          <Loader />
         )}
       </Box>
     </Box>

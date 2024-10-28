@@ -10,7 +10,7 @@ const Customers = () => {
 
   const columns = [
     {
-      field: '_id',
+      field: 'customerId',
       headerName: 'ID',
       flex: 1,
     },
@@ -72,6 +72,9 @@ const Customers = () => {
           },
           '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
             color: `${theme.palette.secondary[200]} !important`,
+          },
+          '& .MuiDataGrid-root': {
+            color: 'black',
           },
         }}
       >

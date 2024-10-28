@@ -24,12 +24,12 @@ const Transactions = () => {
 
   const columns = [
     {
-      field: '_id',
+      field: 'transactionId',
       headerName: 'ID',
       flex: 1,
     },
     {
-      field: 'userId',
+      field: 'customerId',
       headerName: 'User ID',
       flex: 1,
     },
@@ -80,6 +80,9 @@ const Transactions = () => {
           },
           '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
             color: `${theme.palette.secondary[200]} !important`,
+          },
+          '& .MuiDataGrid-root': {
+            color: 'black',
           },
         }}
       >
