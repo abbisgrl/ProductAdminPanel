@@ -7,7 +7,7 @@ import {
 } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
 import { setThemeMode } from '../../state/store.js'
-import profileImage from '../../assets/profile.jpeg'
+import profileImage from '../../assets/userprofile.png'
 import {
   AppBar,
   Button,
