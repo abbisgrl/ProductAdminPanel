@@ -15,6 +15,7 @@ import Breakdown from '../features/sales/BreakdownChart/Breakdown.js'
 import AddProduct from '../features/products/AddProducts.js'
 import AddCustomer from '../features/customer/AddCustomer.js'
 import AddTransaction from '../features/transactions/AddTransaction.js'
+import UsersList from '../features/admin/index.js'
 
 const Routers = () => {
   return (
@@ -75,6 +76,10 @@ const Routers = () => {
       <Route
         path="/breakdown"
         element={<PrivateRoutes Component={Breakdown} />}
+      />
+      <Route
+        path="/management/users"
+        element={<PrivateRoutes Component={UsersList} />}
       />
     </Routes>
   )

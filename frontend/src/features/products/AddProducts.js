@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useAddProductMutation } from '../../state/api'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { showAlert } from '../../state/alertSlice'
 
 const AddProduct = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [productData, setProductData] = useState({
     name: '',
     price: '',
@@ -12,13 +18,7 @@ const AddProduct = () => {
     supply: '',
   })
 
-  const [addProduct, { data, isLoading }] = useAddProductMutation()
-
-  useEffect(() => {
-    if (data) {
-      console.log('Product successfully added')
-    }
-  }, [data])
+  const [addProduct, { data }] = useAddProductMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -32,7 +32,16 @@ const AddProduct = () => {
     e.preventDefault()
     // Here you can integrate your backend call to save the product
     try {
-      const result = await addProduct(productData).unwrap() // Call signup mutation with form data
+      await addProduct(productData).unwrap() // Call signup mutation with form data
+      dispatch(
+        showAlert({
+          severity: 'success',
+          title: 'Success',
+          message: 'Product added successfully',
+          autoHideDuration: 3000, // Custom duration in milliseconds
+        }),
+      )
+      navigate('/products')
     } catch (error) {
       console.error('Signup failed:', error) // Handle error
     }

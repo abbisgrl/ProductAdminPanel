@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -9,10 +11,14 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material'
-import { useAddCustomerMutation, useAddProductMutation } from '../../state/api'
+import { useAddCustomerMutation } from '../../state/api'
 import countriesData from '../../utils/countryData'
+import { showAlert } from '../../state/alertSlice.js'
 
 const AddCustomer = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [customerData, setCustomerData] = useState({
     name: '',
     email: '',
@@ -23,7 +29,7 @@ const AddCustomer = () => {
     phoneNumber: '',
   })
 
-  const [addCustomer, { data, isLoading }] = useAddCustomerMutation()
+  const [addCustomer] = useAddCustomerMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -37,7 +43,16 @@ const AddCustomer = () => {
     e.preventDefault()
     // Here you can integrate your backend call to save the product
     try {
-      const result = await addCustomer(customerData).unwrap() // Call signup mutation with form data
+      await addCustomer(customerData).unwrap() // Call signup mutation with form data
+      dispatch(
+        showAlert({
+          severity: 'success',
+          title: 'Success',
+          message: 'Customer details added successfully',
+          autoHideDuration: 3000, // Custom duration in milliseconds
+        }),
+      )
+      navigate('/customers')
     } catch (error) {
       console.error('Signup failed:', error) // Handle error
     }

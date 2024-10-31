@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
+import User from '../model/User.js'
 
-export const auth = (req, res, next) => {
+export const auth = async (req, res, next) => {
   const token = req.headers.authorization
   const accessToken = token.split('Bearer ')[1]
   if (!accessToken) {
@@ -10,16 +11,28 @@ export const auth = (req, res, next) => {
     })
   }
   const secret = process.env.JWT_SECRET
+  const roleObject = {
+    admin: 'A',
+    user: 'T',
+    superadmin: 'S',
+  }
 
   try {
     // Verify the token and extract the payload
     const decoded = jwt.verify(accessToken, secret)
-
-    // Extract the userId from the decoded token
     const userId = decoded.userId
     req.userId = decoded.userId
+    const user = await User.findOne({ userId })
+    if (user?.role && !req.roles.includes(roleObject[user?.role])) {
+      return res.status(403).json({ message: 'Access denied' })
+    }
   } catch (err) {
     console.error('Token verification failed:', err.message)
   }
   next()
+}
+
+export const withRoles = (roles) => (req, res, next) => {
+  req.roles = roles // Attach roles to req
+  auth(req, res, next) // Call the original auth middleware
 }

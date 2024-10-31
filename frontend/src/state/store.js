@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
+import alertSlice from '../state/alertSlice.js'
 
 import { api } from './api'
 
@@ -23,6 +24,7 @@ export const { setThemeMode } = globalSlices.actions
 const store = configureStore({
   reducer: {
     globalStyle: globalSlices.reducer,
+    alert: alertSlice,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefault) => getDefault().concat(api.middleware),

@@ -1,5 +1,5 @@
 import express from 'express'
-import { auth } from '../misc/auth.js'
+import { withRoles } from '../misc/auth.js'
 import {
   addCustomer,
   addProduct,
@@ -12,18 +12,18 @@ import {
 
 const router = express.Router()
 
-router.get('/productList', auth, getProductList)
+router.get('/productList', withRoles(['S', 'A', 'T']), getProductList)
 
-router.post('/addProduct', auth, addProduct)
+router.post('/addProduct', withRoles(['S', 'A']), addProduct)
 
-router.get('/customerList', auth, getCustomerList)
+router.get('/customerList', withRoles(['S', 'A', 'T']), getCustomerList)
 
-router.post('/addCustomer', auth, addCustomer)
+router.post('/addCustomer', withRoles(['S', 'A']), addCustomer)
 
-router.get('/transactionsList', auth, getTransactionsList)
+router.get('/transactionsList', withRoles(['S', 'A', 'T']), getTransactionsList)
 
-router.post('/addTransaction', auth, addTransaction)
+router.post('/addTransaction', withRoles(['S', 'A']), addTransaction)
 
-router.get('/geographicData', auth, getGeographyData)
+router.get('/geographicData', withRoles(['S', 'A', 'T']), getGeographyData)
 
 export default router

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useState, useEffect } from 'react'
 import {
   Box,
@@ -22,7 +23,6 @@ import {
   TodayOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
   PieChartOutlined,
   ExpandLess,
   ExpandMore,
@@ -81,11 +81,15 @@ const Sidebar = ({
           text: 'Products',
           icon: <ShoppingCartOutlined />,
           children: [
-            {
-              text: 'Add Product',
-              icon: <AddCircleOutline />,
-              url: '/add/product',
-            },
+            ...(isSuperadminOrAdmin
+              ? [
+                  {
+                    text: 'Add Product',
+                    icon: <AddCircleOutline />,
+                    url: '/add/product',
+                  },
+                ]
+              : []),
             {
               text: 'View Products',
               icon: <ViewListOutlined />,
@@ -97,11 +101,16 @@ const Sidebar = ({
           text: 'Customers',
           icon: <Groups2Outlined />,
           children: [
-            {
-              text: 'Add Customer',
-              icon: <AddCircleOutline />,
-              url: '/add/customer',
-            },
+            ...(isSuperadminOrAdmin
+              ? [
+                  {
+                    text: 'Add Customer',
+                    icon: <AddCircleOutline />,
+                    url: '/add/customer',
+                  },
+                ]
+              : []),
+
             {
               text: 'View Customers',
               icon: <ViewListOutlined />,
@@ -113,11 +122,15 @@ const Sidebar = ({
           text: 'Transactions',
           icon: <ReceiptLongOutlined />,
           children: [
-            {
-              text: 'Add Transactions',
-              icon: <AddCircleOutline />,
-              url: '/add/transaction',
-            },
+            ...(isSuperadminOrAdmin
+              ? [
+                  {
+                    text: 'Add Transactions',
+                    icon: <AddCircleOutline />,
+                    url: '/add/transaction',
+                  },
+                ]
+              : []),
             {
               text: 'View Transactions',
               icon: <ViewListOutlined />,
@@ -128,6 +141,7 @@ const Sidebar = ({
         {
           text: 'Geography',
           icon: <PublicOutlined />,
+          url: '/geography',
         },
       ],
     },
@@ -162,15 +176,15 @@ const Sidebar = ({
                   {
                     text: 'Manage User',
                     icon: <ViewListOutlined />,
-                    url: '/users',
+                    url: '/management/users',
                   },
                 ],
               },
-              {
-                text: 'Performance',
-                icon: <TrendingUpOutlined />,
-                url: '/performance',
-              },
+              // {
+              //   text: 'Performance',
+              //   icon: <TrendingUpOutlined />,
+              //   url: '/performance',
+              // },
             ],
           },
         ]
@@ -227,7 +241,6 @@ const Sidebar = ({
                           children: subChildren,
                           url: childUrl,
                         }) => {
-                          const lcText = childText.toLowerCase()
                           return (
                             <React.Fragment key={childText}>
                               <ListItemButton
@@ -279,8 +292,6 @@ const Sidebar = ({
                                       icon: subChildIcon,
                                       url: subChildUrl,
                                     }) => {
-                                      const subChildLcText =
-                                        subChildText.toLowerCase()
                                       return (
                                         <ListItemButton
                                           key={subChildText}

@@ -3,13 +3,13 @@ import {
   getDashboardsDetails,
   getUserDetails,
 } from '../controller/generalConroller.js'
-import { auth } from '../misc/auth.js'
+import { withRoles } from '../misc/auth.js'
 
 const router = express.Router()
 
 // Define routes for authentication
-router.get('/user/details', auth, getUserDetails)
+router.get('/user/details', withRoles(['S', 'A', 'T']), getUserDetails)
 
-router.get('/dashboard', auth, getDashboardsDetails)
+router.get('/dashboard', withRoles(['S', 'A', 'T']), getDashboardsDetails)
 
 export default router

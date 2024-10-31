@@ -6,8 +6,18 @@ import Transaction from '../model/Transaction.js'
 import getCountryISO3 from 'country-iso-2-to-3'
 
 export const getProductList = async (req, res, next) => {
+  const { searchText } = req.query || {}
   try {
     const getProducts = await Product.aggregate([
+      {
+        $match: {
+          $or: [
+            { name: { $regex: searchText, $options: 'i' } }, // Case-insensitive search for name
+            { productId: { $regex: searchText, $options: 'i' } }, // Case-insensitive search for productId
+            { description: { $regex: searchText, $options: 'i' } }, // Case-insensitive search for description
+          ],
+        },
+      },
       {
         $lookup: {
           from: ProductMetrics.collection.name,
@@ -21,7 +31,7 @@ export const getProductList = async (req, res, next) => {
 
     res.status(200).json(getProducts)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -32,16 +42,33 @@ export const addProduct = async (req, res, next) => {
     const response = { message: 'Product Succefully Added' }
     res.status(200).json(response)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
 export const getCustomerList = async (req, res, next) => {
+  const { searchText } = req.query || {}
+  let query
+  // Check if searchText is empty or undefined
+  if (!searchText) {
+    // Return all customers if searchText is empty
+    query = {} // No filter applied
+  } else {
+    // Construct the regex search query
+    query = {
+      $or: [
+        { name: { $regex: searchText, $options: 'i' } },
+        { email: { $regex: searchText, $options: 'i' } },
+        { phoneNumber: { $regex: searchText, $options: 'i' } },
+      ],
+    }
+  }
+
   try {
-    const customerList = await Customer.find()
+    const customerList = await Customer.find(query)
     res.status(200).json(customerList)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -52,7 +79,7 @@ export const addCustomer = async (req, res, next) => {
     const response = { message: 'Customer Succefully Added' }
     res.status(200).json(response)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -82,16 +109,23 @@ export const getTransactionsList = async (req, res, next) => {
       .skip(page * pageSize)
       .limit(pageSize)
 
-    const total = await Transaction.countDocuments({
-      name: { $regex: search, $options: 'i' },
-    })
+    const total = await Transaction.countDocuments(
+      search
+        ? {
+            $or: [
+              { cost: { $regex: search, $options: 'i' } },
+              { customerId: { $regex: search, $options: 'i' } },
+            ],
+          }
+        : {},
+    )
 
     res.status(200).json({
       transactions,
       total,
     })
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -111,7 +145,7 @@ export const addTransaction = async (req, res, next) => {
     const response = { message: 'Transaction Succefully Added' }
     res.status(200).json(response)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -130,6 +164,6 @@ export const getGeographyData = async (req, res, next) => {
     }, [])
     res.status(200).json(countryData)
   } catch (error) {
-    console.dir({ error }, { depth: null })
+    res.status(404).json({ message: error.message })
   }
 }

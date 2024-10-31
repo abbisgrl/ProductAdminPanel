@@ -12,6 +12,7 @@ export const api = createApi({
     'Geographic',
     'TotalStats',
     'Dashboard',
+    'Management',
   ],
   endpoints: (build) => ({
     // Add auth endpoint
@@ -50,7 +51,7 @@ export const api = createApi({
 
     // Add products api endpoint
     getProductsList: build.query({
-      query: () => {
+      query: (searchText = '') => {
         const token = localStorage.getItem('token') // Assuming token is stored in localStorage
         return {
           url: '/client/productList',
@@ -58,6 +59,7 @@ export const api = createApi({
           headers: {
             Authorization: `Bearer ${token}`, // Add the Authorization header
           },
+          params: { searchText },
         }
       },
       providesTags: ['Products'],
@@ -80,7 +82,7 @@ export const api = createApi({
 
     // Add customers api endpoint
     getCustomerList: build.query({
-      query: () => {
+      query: (searchText = '') => {
         const token = localStorage.getItem('token') // Assuming token is stored in localStorage
         return {
           url: '/client/customerList',
@@ -88,6 +90,7 @@ export const api = createApi({
           headers: {
             Authorization: `Bearer ${token}`, // Add the Authorization header
           },
+          params: { searchText },
         }
       },
       providesTags: ['Customers'],
@@ -183,6 +186,36 @@ export const api = createApi({
       },
       providesTags: ['Dashboard'],
     }),
+
+    // Add admin api endpoint
+    getUsersList: build.query({
+      query: () => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/management/users',
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Management'],
+    }),
+
+    updateUserDetails: build.mutation({
+      query: ({ userDetails }) => {
+        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
+        return {
+          url: '/management/user/update',
+          method: 'POST',
+          body: userDetails,
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        }
+      },
+      providesTags: ['Management'],
+    }),
   }),
 })
 
@@ -199,4 +232,6 @@ export const {
   useGetGeographyDataQuery,
   useGetTotalStatsQuery,
   useGetDashboardDataQuery,
+  useGetUsersListQuery,
+  useUpdateUserDetailsMutation,
 } = api

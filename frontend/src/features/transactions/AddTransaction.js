@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import {
   Box,
@@ -14,8 +15,14 @@ import {
   useGetCustomerListQuery,
   useGetProductsListQuery,
 } from '../../state/api'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { showAlert } from '../../state/alertSlice'
 
 const AddTransaction = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [transactionData, setTransactionData] = useState({
     customerId: '',
     cost: '',
@@ -29,7 +36,7 @@ const AddTransaction = () => {
     useGetCustomerListQuery()
   const { data: productData, isLoading: productIsLoading } =
     useGetProductsListQuery()
-  const [addTransaction, { data, isLoading }] = useAddTransactionMutation()
+  const [addTransaction] = useAddTransactionMutation()
 
   // Fetch users and products from API (placeholder functions)
   useEffect(() => {
@@ -81,7 +88,16 @@ const AddTransaction = () => {
     e.preventDefault()
     // Here you can integrate your backend call to save the product
     try {
-      const result = await addTransaction(transactionData).unwrap()
+      await addTransaction(transactionData).unwrap()
+      dispatch(
+        showAlert({
+          severity: 'success',
+          title: 'Success',
+          message: 'Transactions details added successfully',
+          autoHideDuration: 3000, // Custom duration in milliseconds
+        }),
+      )
+      navigate('/transactions')
     } catch (error) {
       console.error('Adding transaction failed', error) // Handle error
     }

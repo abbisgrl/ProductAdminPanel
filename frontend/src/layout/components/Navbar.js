@@ -3,7 +3,6 @@ import {
   LightModeOutlined,
   DarkModeOutlined,
   Menu as MenuIcon,
-  Search,
   ArrowDropDownOutlined,
 } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
@@ -15,22 +14,27 @@ import {
   Box,
   Typography,
   IconButton,
-  InputBase,
   Toolbar,
   Menu,
   MenuItem,
   useTheme,
 } from '@mui/material'
 import FlexBetween from '../../styles/FlexBetween.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch()
   const theme = useTheme()
+  const navigate = useNavigate()
 
   const [anchorEl, setAnchorEl] = useState(null)
   const isOpen = Boolean(anchorEl)
   const handleClick = (event) => setAnchorEl(event.currentTarget)
-  const handleClose = () => setAnchorEl(null)
+  const handleClose = () => {
+    localStorage.removeItem('token')
+    navigate('/login')
+    setAnchorEl(null)
+  }
 
   return (
     <AppBar
@@ -46,17 +50,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <MenuIcon />
           </IconButton>
-          <FlexBetween
-            backgroundColor={theme.palette.background.alt}
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
         </FlexBetween>
 
         {/* RIGHT SIDE */}

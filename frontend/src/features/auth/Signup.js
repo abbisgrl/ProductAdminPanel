@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import {
   TextField,
   Button,
@@ -12,8 +13,11 @@ import {
 } from '@mui/material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useSignupMutation } from '../../state/api'
+import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,7 +28,14 @@ const Signup = () => {
   })
 
   const roles = ['user', 'admin', 'superadmin']
-  const [signup, { data, isLoading }] = useSignupMutation()
+  const [signup, { data }] = useSignupMutation()
+
+  useEffect(() => {
+    if (data?.token) {
+      localStorage.setItem('token', data.token)
+      navigate('/')
+    }
+  }, [data])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -34,7 +45,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const result = await signup(formData).unwrap() // Call signup mutation with form data
+      await signup(formData).unwrap() // Call signup mutation with form data
     } catch (error) {
       console.error('Signup failed:', error) // Handle error
     }

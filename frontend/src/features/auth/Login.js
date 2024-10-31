@@ -43,10 +43,6 @@ const Login = () => {
     }
   }
 
-  const handleSignupRedirect = () => {
-    console.log('Redirect to signup page') // Replace with actual navigation logic
-  }
-
   return (
     <Box>
       {/* AppBar for Company Name and Logo */}
@@ -103,10 +99,7 @@ const Login = () => {
             </Grid>
             <Grid item xs={12}>
               <Typography align="center" variant="body2">
-                Don't have an account?{' '}
-                <Link href="/signup" onClick={handleSignupRedirect}>
-                  Sign Up
-                </Link>
+                Don't have an account? <Link href="/signup">Sign Up</Link>
               </Typography>
             </Grid>
           </Grid>

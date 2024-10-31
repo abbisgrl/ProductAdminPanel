@@ -1,11 +1,11 @@
 import express from 'express'
 
-import { auth } from '../misc/auth.js'
+import { withRoles } from '../misc/auth.js'
 import { totalStats } from '../controller/salesController.js'
 
 const router = express.Router()
 
 // Defines routes of sales details
-router.get('/totalSales', auth, totalStats)
+router.get('/totalSales', withRoles(['S', 'A', 'T']), totalStats)
 
 export default router

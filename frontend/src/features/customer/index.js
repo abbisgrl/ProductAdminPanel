@@ -1,12 +1,47 @@
-import React from 'react'
-import { Box, useTheme } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, IconButton, InputBase, useTheme } from '@mui/material'
 import { useGetCustomerListQuery } from '../../state/api.js'
 import Header from '../component/SubHeader'
 import { DataGrid } from '@mui/x-data-grid'
+import { debounce } from 'throttle-debounce'
+import FlexBetween from '../../styles/FlexBetween.jsx'
+import { Search } from '@mui/icons-material'
 
 const Customers = () => {
   const theme = useTheme()
-  const { data, isLoading } = useGetCustomerListQuery()
+  const [searchText, setSearchText] = useState('')
+  const [triggerFetch, setTriggerFetch] = useState(false)
+  const { data, isLoading, refetch } = useGetCustomerListQuery(
+    searchText,
+    // { skip: !triggerFetch },
+  )
+
+  // Effect to handle refetch based on triggerFetch
+  useEffect(() => {
+    if (triggerFetch) {
+      refetch().then(() => {
+        setTriggerFetch(false) // Reset trigger after refetch completes
+      })
+    }
+  }, [triggerFetch, refetch])
+
+  // Debounced function to fetch data
+  const fetchList = useCallback(() => {
+    setTriggerFetch(true)
+  }, [])
+
+  useEffect(() => {
+    const debouncedFetch = debounce(500, fetchList)
+    debouncedFetch() // Directly calling the debounced function here
+
+    return () => {
+      debouncedFetch.cancel() // Cancel on cleanup
+    }
+  }, [searchText, fetchList]) // Make sure searchText and fetchList trigger the effect
+
+  const handleSearch = (event) => {
+    setSearchText(event.target.value)
+  }
 
   const columns = [
     {
@@ -46,13 +81,30 @@ const Customers = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="CUSTOMERS" subtitle="List of Customers" />
+      <Header title="CUSTOMERS" />
+      <FlexBetween
+        backgroundColor={theme.palette.background.alt}
+        borderRadius="9px"
+        gap="1rem"
+        p="0.3rem 1rem" // Reduced padding for a more compact look
+        width="400px" // Set a fixed width to limit the search bar size
+      >
+        <InputBase
+          placeholder="Search..."
+          value={searchText}
+          onChange={handleSearch}
+        />
+        <IconButton>
+          <Search />
+        </IconButton>
+      </FlexBetween>
       <Box
         mt="40px"
         height="75vh"
         sx={{
           '& .MuiDataGrid-root': {
             border: 'none',
+            color: 'black',
           },
           '& .MuiDataGrid-cell': {
             borderBottom: 'none',
@@ -72,9 +124,6 @@ const Customers = () => {
           },
           '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
             color: `${theme.palette.secondary[200]} !important`,
-          },
-          '& .MuiDataGrid-root': {
-            color: 'black',
           },
         }}
       >
