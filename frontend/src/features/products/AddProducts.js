@@ -18,7 +18,7 @@ const AddProduct = () => {
     supply: '',
   })
 
-  const [addProduct, { data }] = useAddProductMutation()
+  const [addProduct] = useAddProductMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target

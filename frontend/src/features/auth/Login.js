@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -20,7 +21,7 @@ const Login = () => {
     password: '',
   })
   const navigate = useNavigate()
-  const [login, { data, isLoading }] = useLoginMutation()
+  const [login, { data }] = useLoginMutation()
 
   useEffect(() => {
     if (data?.token) {
@@ -37,7 +38,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const result = await login(formData).unwrap() // Call signup mutation with form data
+      await login(formData).unwrap() // Call signup mutation with form data
     } catch (error) {
       console.error('login failed:', error) // Handle error
     }
