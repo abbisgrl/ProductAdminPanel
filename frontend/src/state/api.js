@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8001' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://product-adminpanel.vercel.app',
+  }),
   reducerPath: 'adminApi',
   tagTypes: [
     'Auth',
