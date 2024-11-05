@@ -58,7 +58,7 @@ const Signup = () => {
         <Toolbar>
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant="h6" color="inherit" sx={{ marginRight: 1 }}>
-            TechSphere
+            MarketMetrix
           </Typography>
           <IconButton edge="end" color="inherit">
             <AccountCircleIcon fontSize="large" />
