@@ -18,7 +18,7 @@ const AddProduct = () => {
     supply: '',
   })
 
-  const [addProduct] = useAddProductMutation()
+  const [addProduct, { isLoading }] = useAddProductMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -124,7 +124,12 @@ const AddProduct = () => {
         fullWidth
       />
 
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={isLoading}
+      >
         Add Product
       </Button>
     </Box>

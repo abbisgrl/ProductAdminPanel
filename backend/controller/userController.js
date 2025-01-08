@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { v4 as uuidv4 } from 'uuid' // random
 
 export const loginController = async (req, res, next) => {
-  const { email, password } = req.body
+  const { name, email, password, isAdmin, role, title } = req.body
   try {
     const user = await User.findOne({ email })
     if (!user) {
@@ -14,7 +14,7 @@ export const loginController = async (req, res, next) => {
 
     const validPassword = await bcrypt.compareSync(password, user.password)
     if (!validPassword) {
-      return next(createError(201, 'Wrong password'))
+      return res.status(401).send({ message: 'Wrong Password' })
     }
 
     // create jwt token

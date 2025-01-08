@@ -36,7 +36,8 @@ const AddTransaction = () => {
     useGetCustomerListQuery()
   const { data: productData, isLoading: productIsLoading } =
     useGetProductsListQuery()
-  const [addTransaction] = useAddTransactionMutation()
+  const [addTransaction, { isLoading: addTransactionLoading }] =
+    useAddTransactionMutation()
 
   // Fetch users and products from API (placeholder functions)
   useEffect(() => {
@@ -167,7 +168,12 @@ const AddTransaction = () => {
         </Select>
       </FormControl>
 
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={addTransactionLoading}
+      >
         Add Transaction
       </Button>
     </Box>

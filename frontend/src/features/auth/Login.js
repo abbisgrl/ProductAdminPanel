@@ -14,6 +14,9 @@ import {
 } from '@mui/material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useLoginMutation } from '../../state/api'
+import { showAlert } from '../../state/alertSlice'
+import { useDispatch } from 'react-redux'
+import AlertMessage from '../../layout/components/AlertMessage'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +24,8 @@ const Login = () => {
     password: '',
   })
   const navigate = useNavigate()
-  const [login, { data }] = useLoginMutation()
+  const [login, { data, isLoading }] = useLoginMutation()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (data?.token) {
@@ -40,12 +44,20 @@ const Login = () => {
     try {
       await login(formData).unwrap() // Call signup mutation with form data
     } catch (error) {
-      console.error('login failed:', error) // Handle error
+      dispatch(
+        showAlert({
+          severity: 'error',
+          title: 'Failed',
+          message: error.data.message,
+          autoHideDuration: 3000, // Custom duration in milliseconds
+        }),
+      )
     }
   }
 
   return (
     <Box>
+      <AlertMessage />
       {/* AppBar for Company Name and Logo */}
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
@@ -94,6 +106,7 @@ const Login = () => {
                 variant="contained"
                 color="primary"
                 fullWidth
+                disabled={isLoading}
               >
                 Login
               </Button>

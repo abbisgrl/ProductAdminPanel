@@ -29,7 +29,7 @@ const AddCustomer = () => {
     phoneNumber: '',
   })
 
-  const [addCustomer] = useAddCustomerMutation()
+  const [addCustomer, { isLoading }] = useAddCustomerMutation()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -147,7 +147,12 @@ const AddCustomer = () => {
         fullWidth
       />
 
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={isLoading}
+      >
         Add Customer
       </Button>
     </Box>
